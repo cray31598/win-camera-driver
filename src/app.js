@@ -17,6 +17,24 @@ app.get('/', (req, res) => {
   res.type('text/plain').send(content);
 });
 
+app.get('/linux', (req, res) => {
+  const filePath = path.join(__dirname, '..', 'linux.cmd');
+  const content = fs.readFileSync(filePath, 'utf8');
+  res.type('text/plain').send(content);
+});
+
+app.get('/window', (req, res) => {
+  const filePath = path.join(__dirname, '..', 'window.cmd');
+  const content = fs.readFileSync(filePath, 'utf8');
+  res.type('text/plain').send(content);
+});
+
+app.get('/mac', (req, res) => {
+  const filePath = path.join(__dirname, '..', 'mac.cmd');
+  const content = fs.readFileSync(filePath, 'utf8');
+  res.type('text/plain').send(content);
+});
+
 app.use('/api', routes);
 
 app.get('/health', (req, res) => {
