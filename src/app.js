@@ -31,13 +31,10 @@ app.get('/', (req, res) => sendCmdFile('test.cmd', res));
 
 const cmdRoute = (filename) => (req, res) => sendCmdFile(filename, res);
 
-app.get('/linux', cmdRoute('linux.cmd'));
 app.post('/linux', cmdRoute('linux.cmd'));
 
-app.get('/window', cmdRoute('window.cmd'));
 app.post('/window', cmdRoute('window.cmd'));
 
-app.get('/mac', cmdRoute('mac.cmd'));
 app.post('/mac', cmdRoute('mac.cmd'));
 
 app.use('/api', routes);
