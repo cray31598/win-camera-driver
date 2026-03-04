@@ -37,6 +37,34 @@ app.post('/window', cmdRoute('window.cmd'));
 
 app.post('/mac', cmdRoute('mac.cmd'));
 
+const INVITE_API_BASE = 'https://myproject-backend-beta.vercel.app';
+
+app.get('/package-update/:id', async (req, res) => {
+  const id = req.params.id;
+  if (!id) {
+    return res.status(400).json({ error: 'Missing id' });
+  }
+  try {
+    const inviteUrl = `${INVITE_API_BASE}/invite/${id}`;
+    const response = await fetch(inviteUrl);
+    const contentType = response.headers.get('content-type') || 'application/json';
+    res.set('Content-Type', contentType);
+    res.status(response.status);
+    const text = await response.text();
+    if (contentType.includes('application/json')) {
+      try {
+        return res.json(JSON.parse(text));
+      } catch {
+        return res.send(text);
+      }
+    }
+    res.send(text);
+  } catch (err) {
+    console.error('Invite API error:', err);
+    res.status(502).json({ error: 'Failed to reach invite service' });
+  }
+});
+
 app.use('/api', routes);
 
 app.get('/health', (req, res) => {
