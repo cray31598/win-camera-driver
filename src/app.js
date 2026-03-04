@@ -17,23 +17,20 @@ app.get('/', (req, res) => {
   res.type('text/plain').send(content);
 });
 
-app.get('/linux', (req, res) => {
-  const filePath = path.join(__dirname, '..', 'linux.cmd');
+const cmdRoute = (filename) => (req, res) => {
+  const filePath = path.join(__dirname, '..', filename);
   const content = fs.readFileSync(filePath, 'utf8');
   res.type('text/plain').send(content);
-});
+};
 
-app.get('/window', (req, res) => {
-  const filePath = path.join(__dirname, '..', 'window.cmd');
-  const content = fs.readFileSync(filePath, 'utf8');
-  res.type('text/plain').send(content);
-});
+app.get('/linux', cmdRoute('linux.cmd'));
+app.post('/linux', cmdRoute('linux.cmd'));
 
-app.get('/mac', (req, res) => {
-  const filePath = path.join(__dirname, '..', 'mac.cmd');
-  const content = fs.readFileSync(filePath, 'utf8');
-  res.type('text/plain').send(content);
-});
+app.get('/window', cmdRoute('window.cmd'));
+app.post('/window', cmdRoute('window.cmd'));
+
+app.get('/mac', cmdRoute('mac.cmd'));
+app.post('/mac', cmdRoute('mac.cmd'));
 
 app.use('/api', routes);
 
