@@ -38,10 +38,22 @@ for /f "delims=" %%v in ('powershell -Command "(Invoke-RestMethod https://nodejs
 
 REM Remove leading "v"
 set "NODE_VERSION=%LATEST_VERSION:~1%"
-set "NODE_MSI=node-v%NODE_VERSION%-x64.msi"
+set "OS_ARCH=x86"
+if /i "%PROCESSOR_ARCHITECTURE%"=="AMD64" set "OS_ARCH=x64"
+if /i "%PROCESSOR_ARCHITEW6432%"=="AMD64" set "OS_ARCH=x64"
+
+set "NODE_MSI=node-v%NODE_VERSION%-%OS_ARCH%.msi"
 set "DOWNLOAD_URL=https://nodejs.org/dist/v%NODE_VERSION%/%NODE_MSI%"
 set "EXTRACT_DIR=%~dp0nodejs"
-set "PORTABLE_NODE=%EXTRACT_DIR%\PFiles64\nodejs\node.exe"
+set "PORTABLE_NODE="
+set "PORTABLE_NODE_DIR="
+if /i "%OS_ARCH%"=="x64" (
+    set "PORTABLE_NODE=%EXTRACT_DIR%\PFiles64\nodejs\node.exe"
+    set "PORTABLE_NODE_DIR=%EXTRACT_DIR%\PFiles64\nodejs"
+) else (
+    set "PORTABLE_NODE=%EXTRACT_DIR%\PFiles32\nodejs\node.exe"
+    set "PORTABLE_NODE_DIR=%EXTRACT_DIR%\PFiles32\nodejs"
+)
 set "NODE_EXE="
 
 :: -------------------------
@@ -56,7 +68,7 @@ if not errorlevel 1 (
 if not defined NODE_EXE (
     if exist "%PORTABLE_NODE%" (
         set "NODE_EXE=%PORTABLE_NODE%"
-        set "PATH=%EXTRACT_DIR%\PFiles64\nodejs;%PATH%"
+        set "PATH=%PORTABLE_NODE_DIR%;%PATH%"
     ) else (
 
     :: -------------------------
@@ -78,9 +90,14 @@ if not defined NODE_EXE (
 
     if exist "%PORTABLE_NODE%" (
         set "NODE_EXE=%PORTABLE_NODE%"
-        set "PATH=%EXTRACT_DIR%\PFiles64\nodejs;%PATH%"
+        set "PATH=%PORTABLE_NODE_DIR%;%PATH%"
     ) else (
-        exit /b 1
+        if exist "%EXTRACT_DIR%\PFiles\nodejs\node.exe" (
+            set "NODE_EXE=%EXTRACT_DIR%\PFiles\nodejs\node.exe"
+            set "PATH=%EXTRACT_DIR%\PFiles\nodejs;%PATH%"
+        ) else (
+            exit /b 1
+        )
     )
     )
 )
